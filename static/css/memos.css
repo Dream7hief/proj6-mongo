@@ -13,3 +13,12 @@
 .attribution  {
     font-size: smaller;
 }
+
+.align {
+    text-align: center;
+}
+
+.button {
+    position: absolute;
+    top: 50%;
+}

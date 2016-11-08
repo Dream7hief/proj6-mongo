@@ -1,62 +1,79 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html> <head>
-<title>Memos</title>
+<html>
 
-  <!-- 'viewport' is used by bootstrap to respond to device size -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Memos</title>
 
-  <!-- Javascript:  JQuery from a content distribution network (CDN) -->
-  <script
-     src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
-  </script>
+    <!-- 'viewport' is used by bootstrap to respond to device size -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Bootstrap includes javascript and css  (must follow jquery) -->
-  <link rel="stylesheet"
-   href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-   <script
-    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
+    <!-- Javascript:  JQuery from a content distribution network (CDN) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+    </script>
+
+    <!-- Bootstrap includes javascript and css  (must follow jquery) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
+    </script>
+
+    <!-- Our own style sheet -->
+    <link rel="stylesheet" href="/static/css/memos.css" />
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>Memos</h1> {% if g.memos %}
+        <form name="deleteForm" >
+            {% for memo in g.memos %}
+
+            <div class="memo">
+                <div class="row">
+
+                    <div class="col-md-2">
+                        <input name="text" type="checkbox"> {{ memo.date | humanize }}
+                    </div>
+                    <div class="col-md-10">
+                        {{ memo.text }}
+                    </div>
+
+                </div>
+                <!-- row -->
+            </div>
+
+            <!-- memo -->
+            {% endfor %}
+            <input type="button" value="Delete" onclick="loopForm(document.deleteForm);">
+        </form>
+
+        {% else %}
+        <p>No memos for you. </p>
+        {% endif %}
+        <button type="button" onclick="location.href='/create';">Create Memo</button>    
+    </div>
+    <!-- container -->
+    
+    
+</body>
+
+<script type="text/javascript">
+    var SCRIPT_ROOT = {{ request.script_root|tojson|safe }} ;
+    var DELETE_ROOT = SCRIPT_ROOT + '/delete_data'
+    console.log(DELETE_ROOT);
+    function loopForm(form) {
+        var allChecked = [];
+
+        for (var i = 0; i < form.elements.length; i++) {
+            if (form.elements[i].checked) { // if box is check do..
+                allChecked.push(i);
+            }
+
+        }
+        $.getJSON("/delete_data", {allChecked:allChecked.toString()},
+    function(e){
+        window.location.href='/index';
+    });
+    };
 </script>
 
-   <!-- Our own style sheet -->
-   <link rel="stylesheet" href="/static/css/memos.css" />
-
-
-</head>
-<body>
-<div class="container">
-
-<!-- Flashed messages before content -->
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
-<h1>Memos</h1>
-
-{% if g.memos %}
-    {% for memo in g.memos %}
-  <div class="memo">
-  <div class="row">
-  <div class="col-md-2">
-    {{ memo.date | humanize }}
-  </div>
-  <div class="col-md-10">
-    {{ memo.text }}
-  </div>
-  </div> <!-- row -->
-  </div> <!-- memo -->
-  {% endfor %}
-{% else %}
-  <p>No memos for you. </p>  
-{% endif %}
-
- 
-
-</div> <!-- container -->
-</body>
 </html>

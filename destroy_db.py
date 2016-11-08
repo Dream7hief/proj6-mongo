@@ -21,7 +21,7 @@ try:
     db = getattr(dbclient, secrets.client_secrets.db)
     print("Got database")
     print("Attempting drop users")
-    # db.command( {"dropAllUsersFromDatabase": 1 } )
+
     db.remove_user(secrets.client_secrets.db_user)
     print("Dropped database users for {}".format(secrets.client_secrets.db))
     db.command( {"dropDatabase": 1 } )
